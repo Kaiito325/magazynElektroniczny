@@ -42,7 +42,7 @@
                         $s = "SELECT nazwa, ilosc, zdjecie FROM egzemplarze INNER JOIN przedmioty ON(egzemplarze.id_przedmiotu = przedmioty.id) ORDER BY ilosc DESC LIMIT 10;";
                         $q = mysqli_query($db, $s);
                         while($fRow = mysqli_fetch_row($q)){
-                            echo "<a href='item_details.php?id=$fRow[0]'><div class="item">";
+                            echo "<a href='item_details.php?id=$fRow[0]'><div class='item'>";
                             echo '<div class="gallery">';
                             if($fRow[2] == "") {
                                 echo "<img class='gallery-image' src='images/product.png' alt='ad'>";
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const items = document.querySelectorAll('.item');
     
     let currentIndex = 0; // Indeks bieżącego widocznego elementu
-    const visibleItems = 3; // Ilość widocznych przedmiotów na raz
+    const visibleItems = 4; // Ilość widocznych przedmiotów na raz
     const totalItems = items.length;  // Całkowita liczba elementów
     
     // Funkcja do obliczania szerokości pojedynczego elementu
