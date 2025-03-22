@@ -31,10 +31,25 @@
     </menu>
     <main>
         <section id="items">
-            <div id="showType">
-                sposób wyświetlania:
-                <button><img src="images/list.png" alt=""></button>
-            </div>
+            <h1>Przedmioty</h1>
+            <table class="normalTable">
+
+            <?php
+                $db = mysqli_connect('localhost','root','','magazyn');
+                echo "<tr>";
+                echo "<th>przedmiot</th> <th>magazyn</th> <th>ilość</th> <th>szczegóły</th>";
+                echo "</tr>";
+                $s = "SELECT przedmioty.nazwa, magazyny.nazwa, ilosc FROM egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id ORDER BY przedmioty.nazwa;";
+                $q = mysqli_query($db, $s);
+                while($fRow = mysqli_fetch_row($q)){
+                    echo "<tr>";
+                    echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td>$fRow[2]</td> <td><a href='item_details.php?nazwa=$fRow[0]'>Szczegóły</a></td>";
+                    echo "</tr>";
+                }
+                mysqli_close($db);
+            ?>
+            </table>
         </section>
+        <a href="item_add.php" class="addButton"></a>
     </main>
 </body>

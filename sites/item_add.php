@@ -29,27 +29,4 @@
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
         </ul>
     </menu>
-    <main>
-        <section id="items">
-            <h1>Magazyny</h1>
-            <table class="normalTable">
-
-            <?php
-                $db = mysqli_connect('localhost','root','','magazyn');
-                echo "<tr>";
-                echo "<th>nazwa</th> <th>lokalizacja</th> <th>szczegóły</th>";
-                echo "</tr>";
-                $s = "SELECT nazwa, lokalizacja FROM magazyny;";
-                $q = mysqli_query($db, $s);
-                while($fRow = mysqli_fetch_row($q)){
-                    echo "<tr>";
-                    echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td><a href='warehouse_details.php?nazwa=$fRow[0]'>Szczegóły</a></td>";
-                    echo "</tr>";
-                }
-                mysqli_close($db);
-            ?>
-            </table>
-        </section>
-        <a href="warehouse_add.php" class="addButton"></a>
-    </main>
 </body>

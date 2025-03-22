@@ -83,6 +83,7 @@
                     echo "brak </h3>";
                 echo "</a></div>";
                 }
+                mysqli_close($db);
             ?>
         </section>
         <!-- Pokazuje ostatnie zmiany w magazynie -->
