@@ -63,28 +63,30 @@
         <!-- Wyświetla maagzyny z największą ilością przedmiotów w nich -->
         <section id="warehouses">
             <h2>Największe magazyny</h2>
-            <?php
-            $s = "SELECT nazwa, lokalizacja, zdjecie FROM magazyny INNER JOIN egzemplarze ON magazyny.id = egzemplarze.id_magazynu GROUP BY id_magazynu ORDER BY COUNT(id_magazynu) DESC LIMIT 10;";
-            $q = mysqli_query($db, $s);
-            while($fRow = mysqli_fetch_row($q)){
-                echo "<a href='sites/warehouse_details.php?nazwa=$fRow[0]'><div id='warehouse' class='item'>";
-                echo '<div class="gallery">';
-                if($fRow[2] == "") {
-                    echo "<img class='gallery-image' src='images/warehouse.png' alt='ad'>";
-                } else {
-                    echo "<img class='gallery-image' src='$fRow[2]' alt='zdjecie'>";
-                }
-                echo "</div>";
-                echo "<h2>$fRow[0]</h2>";
-                echo "<h3>Lokalizacja: ";
-                if($fRow[1] != "")
-                    echo "$fRow[1]</h3>";
-                else
-                    echo "brak </h3>";
-                echo "</a></div>";
-                }
-                mysqli_close($db);
-            ?>
+            <div class="itemHolder">
+                <?php
+                $s = "SELECT nazwa, lokalizacja, zdjecie FROM magazyny INNER JOIN egzemplarze ON magazyny.id = egzemplarze.id_magazynu GROUP BY id_magazynu ORDER BY COUNT(id_magazynu) DESC LIMIT 10;";
+                $q = mysqli_query($db, $s);
+                while($fRow = mysqli_fetch_row($q)){
+                    echo "<a href='sites/warehouse_details.php?nazwa=$fRow[0]'><div class='warehouse item'>";
+                    echo '<div class="gallery">';
+                    if($fRow[2] == "") {
+                        echo "<img class='gallery-image' src='images/warehouse.png' alt='ad'>";
+                    } else {
+                        echo "<img class='gallery-image' src='$fRow[2]' alt='zdjecie'>";
+                    }
+                    echo "</div>";
+                    echo "<h2>$fRow[0]</h2>";
+                    echo "<h3>Lokalizacja: ";
+                    if($fRow[1] != "")
+                        echo "$fRow[1]</h3>";
+                    else
+                        echo "brak </h3>";
+                    echo "</a></div>";
+                    }
+                    mysqli_close($db);
+                ?>
+            </div>
         </section>
         <!-- Pokazuje ostatnie zmiany w magazynie -->
         <section id="history">

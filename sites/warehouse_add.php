@@ -33,46 +33,20 @@
     <section id="itemInfo">
         <form action="" method="post" enctype="multipart/form-data">
             <div class="photoContainer">
-                <img id="previewImg" src="../images/product.png" alt="zdjęcie przedmiotu">
+                <img id="previewImg" src="../images/warehouse.png" alt="zdjęcie magazynu">
                 <br>
-                <label for="photo">Wybierz zdjęcie przedmiotu:</label>
+                <label for="photo">Wybierz zdjęcie magazynu:</label>
                 <input type="file" name="photo" id="photo" accept="image/*">
                 <br>
                 <input type="checkbox" name="no_photo" id="no_photo">
                 <label for="no_photo">Brak zdjęcia</label>
             </div>
             <br>
-            <label for="name">Nazwa przedmiotu: </label>
+            <label for="name">Nazwa magazynu: </label>
             <input type="text" name="name" id="name" required>
             <br>
-            <label for="description">Opis przedmiotu: </label>
-            <input type="text" name="description" id="description">
-            <br>
-            <label for="category">Wybierz kategorię przedmiotu: </label>
-            <select name="category" id="category">
-                <?php
-                    $db = mysqli_connect('localhost', 'root', '', 'magazyn');
-                    $s = "SELECT nazwa FROM kategorie;";
-                    $q = mysqli_query($db, $s);
-                    while($fRow = mysqli_fetch_row($q)){
-                        echo "<option value='$fRow[0]'>$fRow[0]</option>";
-                    }
-                ?>
-            </select>
-            <br>
-            <label for="warehouse">Wybierz magazyn: </label>
-            <select name="warehouse" id="warehouse">
-                <?php
-                    $s = "SELECT nazwa FROM magazyny;";
-                    $q = mysqli_query($db, $s);
-                    while($fRow = mysqli_fetch_row($q)){
-                        echo "<option value='$fRow[0]'>$fRow[0]</option>";
-                    }
-                ?>
-            </select>
-            <br>
-            <label for="amount">Ilość: </label>
-            <input type="number" name="amount" id="amount" value="1" min="1">
+            <label for="location">lokalizacja magazynu: </label>
+            <input type="text" name="location" id="location">
             <br>
             <input type="submit" value="Zapisz">
         </form>
@@ -95,10 +69,7 @@
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $name = trim($_POST["name"]);
-            $description = trim($_POST["description"]);
-            $category = trim($_POST["category"]);
-            $warehouse = trim($_POST["warehouse"]);
-            $amount = (int)$_POST["amount"];
+            $location = trim($_POST["location"]);
             $photoPath = "";
 
             if (!isset($_POST["no_photo"]) && isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
@@ -124,45 +95,17 @@
                     echo "Nieobsługiwany format pliku.";
                 }
             }
-
             // Zapis do bazy danych
             
-            //pobieranie id kategorii
-            $catIdMysql = mysqli_query($db, "SELECT id FROM kategorie WHERE nazwa='$category'");
-            if ($catIdMysql && $catId = mysqli_fetch_row($catIdMysql)) {
-                $catId = $catId[0];
-            } else {
-                die("Błąd: Nie znaleziono kategorii '$category'.");
-            }
-            //pobieranie id magazynu
-            $warehouseIdMysql = mysqli_query($db, "SELECT id FROM magazyny WHERE nazwa='$warehouse'");
-            if ($warehouseIdMysql && $warehouseId = mysqli_fetch_row($warehouseIdMysql)) {
-                $warehouseId = $warehouseId[0];
-            } else {
-                die("Błąd: Nie znaleziono magazynu '$warehouse'.");
-            }
-            //wstawianie do bazy danych przedmiotu
-            $ins = "INSERT INTO przedmioty(nazwa, opis, zdjecie, id_kat) 
-            VALUES ('$name', '$description', '" . substr($photoPath, 3)."', $catId[0])";
-            if (!mysqli_query($db, $ins)) {
-                die("Błąd SQL (przedmioty): " . mysqli_error($db));
-            }
-            //pobierasnie z bazy danych id tego przedmiotu
-            $itemIdMysql = mysqli_query($db, "SELECT id FROM przedmioty WHERE nazwa='$name' ORDER BY id DESC LIMIT 1");
-            if ($itemIdMysql && $itemId = mysqli_fetch_row($itemIdMysql)) {
-                $itemId = $itemId[0];
-            } else {
-                die("Błąd: Nie znaleziono przedmiotu '$name' po dodaniu.");
-            }
-            //wstawianie do bazy danych egzemplarzu(y)
-            $ins = "INSERT INTO egzemplarze(id_przedmiotu, id_magazynu, ilosc) 
-            VALUES ($itemId, $warehouseId, $amount)";
+            //wstawianie do bazy danych magazynu
+            $ins = "INSERT INTO magazyny(nazwa, zdjecie, lokalizacja) 
+            VALUES ('$name', '" . substr($photoPath, 3) ."', '$location')";
     
             if (!mysqli_query($db, $ins)) {
                 die("Błąd SQL (egzemplarze): " . mysqli_error($db));
             }
 
-            echo "✅ Przedmiot został dodany poprawnie!";
+            echo "✅ Magazyn został dodany poprawnie!";
             mysqli_close($db);
         }
     ?>
