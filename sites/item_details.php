@@ -171,14 +171,13 @@
                     die("Błąd: Nie znaleziono kategorii '$category'.");
                 }
                 //wstawianie do bazy danych egzemplarzu(y)
-                $ins = "INSERT INTO egzemplarze(id_przedmiotu, id_magazynu, ilosc) 
-                VALUES ($itemId, $warehouseId, $amount)";
+                $upd = "UPDATE przedmioty SET nazwa = '$name', opis = '$description', zdjecie ='$photoPath', id_kat ='$catId[0]' WHERE name = '$name'";
         
-                if (!mysqli_query($db, $ins)) {
+                if (!mysqli_query($db, $upd)) {
                     die("Błąd SQL (egzemplarze): " . mysqli_error($db));
                 }
 
-                echo "✅ Przedmiot został dodany poprawnie!";
+                echo "✅ Przedmiot został edytowany!";
                 mysqli_close($db);
             }
         ?>
