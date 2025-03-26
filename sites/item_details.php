@@ -31,91 +31,95 @@
     </menu>
     <main>
         <section class="availableItems">
-            <h1>Dostępne egzemplarze przedmiotu</h1>
-            <table class="normalTable">
-                <?php
-                    $db = mysqli_connect('localhost', 'root', '', 'magazyn');
-                    echo "<tr>";
-                    echo "<th>przedmiot</th> <th>magazyn</th> <th>lokalizacja magazynu</th> <th>ilość</th> <th>data dodania</th> <th>Edytuj</th>";
-                    echo "</tr>";
-                    $s = "SELECT przedmioty.nazwa, magazyny.nazwa, magazyny.lokalizacja, ilosc, data_dodania FROM egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id WHERE przedmioty.nazwa='". $_GET['nazwa']."'";
-                    $q = mysqli_query($db, $s);
-                    while($fRow = mysqli_fetch_row($q)){
+            <?php
+                $db = mysqli_connect('localhost', 'root', '', 'magazyn');
+                if(isset($_GET['nazwa'])){
+                    echo "<h1>Dostępne egzemplarze przedmiotu</h1>";
+                    echo "<table class='normalTable'>";
+                        $db = mysqli_connect('localhost', 'root', '', 'magazyn');
                         echo "<tr>";
-                        echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td>$fRow[2]</td> <td>$fRow[3]</td> <td>$fRow[4]</td>  <td><a href='item_details.php?nazwa=$fRow[0]'>Edytuj</a></td>";
+                        echo "<th>id</th> <th>przedmiot</th> <th>magazyn</th> <th>lokalizacja magazynu</th> <th>ilość</th> <th>data dodania</th> <th>Edytuj</th>";
                         echo "</tr>";
-                    }   
-                ?>
-            </table>
+                        $s = "SELECT egzemplarze.id, przedmioty.nazwa, magazyny.nazwa, magazyny.lokalizacja, ilosc, data_dodania FROM egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id WHERE przedmioty.nazwa='". $_GET['nazwa']."'";
+                        $q = mysqli_query($db, $s);
+                        while($fRow = mysqli_fetch_row($q)){
+                            echo "<tr>";
+                            echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td>$fRow[2]</td> <td>$fRow[3]</td> <td>$fRow[4]</td> <td>$fRow[5]</td>  <td><a href='item_details.php?id=$fRow[0]'>Edytuj</a></td>";
+                            echo "</tr>";
+                        }   
+                        echo "</table>";
+                }else if($_GET['id']){
+                    echo "<h1>Edyjcja egzemplarza</h1>";
+                    $s = "SELECT przedmioty.nazwa, magazyny.nazwa, stan, opis, ilosc, data_dodania FROM egzemplarze INNER JOIN przedmioty on egzemplarze.id_przedimotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id WHERE egzemplarze.id = " . $_GET['id'] . "";
+                    
+                }
+            ?>
         </section>
         <section id="itemInfo">
-            <button id="editButton" onclick="toggleForm()">Edytuj przedmiot</button>
-            <br>
+            <?php 
+                if(isset($_GET['nazwa'])){
 
-            <form action="" method="post" enctype="multipart/form-data" id="editForm" style="display: none;">
-                <div class="photoContainer">
-                    <?php
-                        $db = mysqli_connect('localhost', 'root', '', 'magazyn');
-                        $s = "SELECT przedmioty.nazwa, opis, zdjecie, kategorie.nazwa FROM przedmioty INNER JOIN kategorie ON przedmioty.id_kat = kategorie.id WHERE przedmioty.nazwa = '" .$_GET['nazwa'] ."'";
-                        $q = mysqli_query($db, $s);
-                        $fRow = mysqli_fetch_row($q);
-                        if($fRow[2] == "" || $fRow[2] =="null"){
-                            echo "<img id='previewImg' src='../images/product.png' alt='zdjęcie przedmiotu'>";
-                        }else{
-                            echo  "<img id='previewImg' src='../$fRow[2]' alt='zdjęcie przedmiotu'>";
-                        }
-
-                    ?>
-                    <br>
-                    <label for="photo">Wybierz zdjęcie przedmiotu:</label>
-                    <input type="file" name="photo" id="photo" accept="image/*">
-                    <br>
-                    <input type="checkbox" name="no_photo" id="no_photo">
-                    <label for="no_photo">Brak zdjęcia</label>
-                </div>
-                <br>
-                <label for="name">Nazwa przedmiotu: </label>
-                <?php
+                    echo "<button id='editButton' onclick='toggleForm()'>Edytuj przedmiot</button>";
+                    echo "<br>";
+                    
+                    echo "<form action='' method='post' enctype='multipart/form-data' id='editForm' style='display: none;'>";
+                    echo "<div class='photoContainer'>";
+                    $db = mysqli_connect('localhost', 'root', '', 'magazyn');
+                    $s = "SELECT przedmioty.nazwa, opis, zdjecie, kategorie.nazwa FROM przedmioty INNER JOIN kategorie ON przedmioty.id_kat = kategorie.id WHERE przedmioty.nazwa = '" .$_GET['nazwa'] ."'";
+                    $q = mysqli_query($db, $s);
+                    $fRow = mysqli_fetch_row($q);
+                    if($fRow[2] == "" || $fRow[2] =="null"){
+                        echo "<img id='previewImg' src='../images/product.png' alt='zdjęcie przedmiotu'>";
+                    }else{
+                        echo  "<img id='previewImg' src='../$fRow[2]' alt='zdjęcie przedmiotu'>";
+                    }
+                    echo "<br>";
+                    echo "<label for='photo'>Wybierz zdjęcie przedmiotu:</label>";
+                    echo "<input type='file' name='photo' id='photo' accept='image/*'>";
+                    echo "<br>";
+                    echo "<input type='checkbox' name='no_photo' id='no_photo'>";
+                    echo "<label for='no_photo'>Brak zdjęcia</label>";
+                    echo "</div>";
+                    echo "<br>";
+                    echo "<label for='name'>Nazwa przedmiotu: </label>";
                     if($fRow[0] == "" || $fRow[0] =="null"){
                         echo "<input type='text' name='name' id='name' required>";
                     }else{
                         echo "<input type='text' name='name' id='name' value='$fRow[0]' required>";
                     }
-                ?>
-                <br>
-                <label for="description">Opis przedmiotu: </label>
-                <?php
+                    echo "<br>";
+                    echo "<label for='description'>Opis przedmiotu: </label>";
                     if($fRow[1] == "" || $fRow[1] =="null"){
                         echo "<input type='text' name='description' id='description'>";
                     }else{
                         echo "<input type='text' name='description' id='description' value='$fRow[1]'>";
                     }
-                ?>
-                <br>
-                <label for="category">Wybierz kategorię przedmiotu: </label>
-                <select name="category" id="category">
-                    <?php
-                        $db = mysqli_connect('localhost', 'root', '', 'magazyn');
-                        $s = "SELECT nazwa FROM kategorie;";
-                        $q = mysqli_query($db, $s);
-                        while($fRow2 = mysqli_fetch_row($q)){
-                            if($fRow[3] == $fRow2[0])
-                                echo "<option value='$fRow2[0]' selected>$fRow2[0]</option>";
-                            else
-                            echo "<option value='$fRow2[0]'>$fRow2[0]</option>";
-                        }
-                    ?>
-                </select>
-                <br>
-                <input type="submit" value="Zapisz">
-            </form>
-        </section>
-        <script>
-             function toggleForm() {
-            var form = document.getElementById('editForm');
-            if (form.style.display === 'none') {
-                form.style.display = 'block'; // Pokazuje formularz
-            } else {
+                    echo "<br>";
+                    echo "<label for='category'>Wybierz kategorię przedmiotu: </label>";
+                    echo "<select name='category' id='category'>";
+                    $db = mysqli_connect('localhost', 'root', '', 'magazyn');
+                    $s = "SELECT nazwa FROM kategorie;";
+                    $q = mysqli_query($db, $s);
+                    while($fRow2 = mysqli_fetch_row($q)){
+                        if($fRow[3] == $fRow2[0])
+                        echo "<option value='$fRow2[0]' selected>$fRow2[0]</option>";
+                    else
+                    echo "<option value='$fRow2[0]'>$fRow2[0]</option>";
+                    }   
+                
+                    echo "</select>";
+                    echo "<br>";
+                    echo "<input type='submit' value='Zapisz'>";
+                    echo "</form>";
+            }
+            ?>
+                </section>
+                <script>
+                function toggleForm() {
+                    var form = document.getElementById('editForm');
+                    if (form.style.display === 'none') {
+                        form.style.display = 'block'; // Pokazuje formularz
+                    } else {
                 form.style.display = 'none'; // Ukrywa formularz
             }
             }
@@ -171,7 +175,7 @@
                     die("Błąd: Nie znaleziono kategorii '$category'.");
                 }
                 //wstawianie do bazy danych egzemplarzu(y)
-                $upd = "UPDATE przedmioty SET nazwa = '$name', opis = '$description', zdjecie ='$photoPath', id_kat ='$catId[0]' WHERE name = '$name'";
+                $upd = "UPDATE przedmioty SET nazwa = '$name', opis = '$description', zdjecie ='$photoPath', id_kat ='$catId[0]' WHERE nazwa = '$name'";
         
                 if (!mysqli_query($db, $upd)) {
                     die("Błąd SQL (egzemplarze): " . mysqli_error($db));
