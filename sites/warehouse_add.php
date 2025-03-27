@@ -22,8 +22,10 @@
             <a href="warehouses.php">
                 <li>Magazyny</li>
             </a>
-            <a href="history.php">
-                <li>Historia</li>
+            <a href="panel.php">
+                <?php
+                    echo "<li>Panel</li>";
+                ?>
             </a>
             
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>

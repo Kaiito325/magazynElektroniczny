@@ -22,8 +22,10 @@
             <a href="warehouses.php">
                 <li>Magazyny</li>
             </a>
-            <a href="history.php">
-                <li>Historia</li>
+            <a href="panel.php">
+                <?php
+                    echo "<li>Panel</li>";
+                ?>
             </a>
             
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
@@ -232,8 +234,7 @@
                         $upd = "UPDATE przedmioty SET nazwa = '$name', opis = '$description', id_kat ='$catId[0]' WHERE nazwa = '$name'";                        
                     }else {
                         $upd = "UPDATE przedmioty SET nazwa = '$name', opis = '$description', zdjecie ='$photoPath', id_kat ='$catId[0]' WHERE nazwa = '$name'";
-                    }
-                    
+                    }                    
                     if (!mysqli_query($db, $upd)) {
                         die("Błąd SQL (egzemplarze): " . mysqli_error($db));
                     }
