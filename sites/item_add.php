@@ -22,8 +22,10 @@
             <a href="warehouses.php">
                 <li>Magazyny</li>
             </a>
-            <a href="history.php">
-                <li>Historia</li>
+            <a href="panel.php">
+                <?php
+                    echo "<li>Panel</li>";
+                ?>
             </a>
             
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
@@ -38,7 +40,7 @@
                 <label for="photo">Wybierz zdjęcie przedmiotu:</label>
                 <input type="file" name="photo" id="photo" accept="image/*">
                 <br>
-                <input type="checkbox" name="no_photo" id="no_photo">
+                <input type="checkbox" name="no_photo" id="no_photo" checked>
                 <label for="no_photo">Brak zdjęcia</label>
             </div>
             <br>
@@ -81,6 +83,11 @@
     <script>
     document.getElementById('photo').addEventListener('change', function(event) {
         let reader = new FileReader();
+        let noPhotoCheckbox = document.getElementById('no_photo');
+    
+        if (this.files.length > 0) {
+            noPhotoCheckbox.checked = false;
+        }
         reader.onload = function(){
             document.getElementById('previewImg').src = reader.result;
         }

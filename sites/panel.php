@@ -27,31 +27,35 @@
                     echo "<li>Panel</li>";
                 ?>
             </a>
-            
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
         </ul>
     </menu>
     <main>
-        <section id="items">
-            <h1>Magazyny</h1>
-            <table class="normalTable">
+        <?php
+        if(true){
+            echo "<section id='loginSection'>";
+                echo "<h1>Zaloguj się</h1>";
+                echo "<form action='' method='post' id='loginForm'>";
+                echo "<label for='login'>login: </label>";
+                echo "<input type='text' id='Login' name='login'>";
+                echo "<label for='password'>Hasło: </label>";
+                echo "<input type='password' id='password' name='password'>";
+                echo "<input type='submit' value='Zaloguj'>";
+                echo "Nie masz konta? <a href='panel.php?singup=true'>Zarejestruj</a>'";
+                echo "</form>";
+            echo "</section>";
+        }
+        ?>
+        <?php
+            session_start();
+            $db = mysqli_connect('localhost', 'root', '', 'magazyn');
 
-            <?php
-                $db = mysqli_connect('localhost','root','','magazyn');
-                echo "<tr>";
-                echo "<th>nazwa</th> <th>lokalizacja</th> <th>szczegóły</th>";
-                echo "</tr>";
-                $s = "SELECT nazwa, lokalizacja FROM magazyny;";
-                $q = mysqli_query($db, $s);
-                while($fRow = mysqli_fetch_row($q)){
-                    echo "<tr>";
-                    echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td><a href='warehouse_details.php?nazwa=$fRow[0]'>Szczegóły</a></td>";
-                    echo "</tr>";
-                }
-                mysqli_close($db);
-            ?>
-            </table>
-        </section>
-        <a href="warehouse_add.php" class="addButton"></a>
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $_POST['login'];
+                $_POST['password'];
+
+
+            }
+        ?>
     </main>
 </body>

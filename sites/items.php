@@ -22,8 +22,10 @@
             <a href="warehouses.php">
                 <li>Magazyny</li>
             </a>
-            <a href="history.php">
-                <li>Historia</li>
+            <a href="panel.php">
+                <?php
+                    echo "<li>Panel</li>";
+                ?>
             </a>
             
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
@@ -39,7 +41,7 @@
                 echo "<tr>";
                 echo "<th>przedmiot</th> <th>magazyn</th> <th>ilość</th> <th>szczegóły</th>";
                 echo "</tr>";
-                $s = "SELECT przedmioty.nazwa, magazyny.nazwa, ilosc FROM egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id ORDER BY przedmioty.nazwa;";
+                $s = "SELECT przedmioty.nazwa, GROUP_CONCAT(DISTINCT magazyny.nazwa), SUM(ilosc) FROM egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id GROUP BY przedmioty.nazwa ORDER BY przedmioty.nazwa;";
                 $q = mysqli_query($db, $s);
                 while($fRow = mysqli_fetch_row($q)){
                     echo "<tr>";

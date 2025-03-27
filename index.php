@@ -22,8 +22,10 @@
             <a href="sites/warehouses.php">
                 <li>Magazyny</li>
             </a>
-            <a href="sites/history.php">
-                <li>Historia</li>
+            <a href="sites/panel.php">
+                <?php
+                    echo "<li>Panel</li>";
+                ?>
             </a>
             
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
@@ -39,7 +41,7 @@
                 <div class="itemHolder">
                     <?php 
                         $db = mysqli_connect('localhost', 'root','', 'magazyn');
-                        $s = "SELECT nazwa, ilosc, zdjecie FROM egzemplarze INNER JOIN przedmioty ON(egzemplarze.id_przedmiotu = przedmioty.id) ORDER BY ilosc DESC LIMIT 10;";
+                        $s = "SELECT nazwa, SUM(ilosc), zdjecie FROM egzemplarze INNER JOIN przedmioty ON(egzemplarze.id_przedmiotu = przedmioty.id) GROUP BY przedmioty.nazwa ORDER BY SUM(ilosc) DESC LIMIT 10;";
                         $q = mysqli_query($db, $s);
                         while($fRow = mysqli_fetch_row($q)){
                             echo "<a href='sites/item_details.php?nazwa=$fRow[0]'><div class='item'>";
