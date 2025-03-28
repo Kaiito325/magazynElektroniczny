@@ -29,6 +29,14 @@
             </a>
             
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            <?php
+            session_start();
+            if(isset($_SESSION['login'])){
+                echo "<a href='logout.php' id='logout-btn'>";
+                echo "    <li>🚪 Wyloguj</li>";
+                echo "</a>";
+            }
+            ?>
         </ul>
     </menu>
     <!-- Główna część strony -->
@@ -91,11 +99,15 @@
             </div>
         </section>
         <!-- Pokazuje ostatnie zmiany w magazynie -->
-        <section id="history">
-            <h2>Ostatnie zmiany</h2>
-            <?php 
-            ?>
-        </section>
+         <?php
+         if(isset($_SESSION['power'])){
+            if($_SESSION['power'] == '2'){
+                echo "<section id='history'>";
+                echo "<h2>Ostatnie zmiany</h2>";
+                echo "</section>";
+            }
+         }
+        ?>
     </main>
     <script>
 document.addEventListener("DOMContentLoaded", function () {

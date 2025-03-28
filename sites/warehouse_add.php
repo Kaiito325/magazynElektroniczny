@@ -29,6 +29,14 @@
             </a>
             
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            <?php
+            session_start();
+            if(isset($_SESSION['login'])){
+                echo "<a href='logout.php' id='logout-btn'>";
+                echo "    <li>🚪 Wyloguj</li>";
+                echo "</a>";
+            }
+            ?>
         </ul>
     </menu>
     <main>
@@ -40,7 +48,7 @@
                 <label for="photo">Wybierz zdjęcie magazynu:</label>
                 <input type="file" name="photo" id="photo" accept="image/*">
                 <br>
-                <input type="checkbox" name="no_photo" id="no_photo">
+                <input type="checkbox" name="no_photo" id="no_photo" checked>
                 <label for="no_photo">Brak zdjęcia</label>
             </div>
             <br>
@@ -57,6 +65,11 @@
     <script>
     document.getElementById('photo').addEventListener('change', function(event) {
         let reader = new FileReader();
+        let noPhotoCheckbox = document.getElementById('no_photo');
+    
+                    if (this.files.length > 0) {
+                        noPhotoCheckbox.checked = false;
+                    }
         reader.onload = function(){
             document.getElementById('previewImg').src = reader.result;
         }

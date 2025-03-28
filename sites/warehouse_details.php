@@ -29,6 +29,14 @@
             </a>
             
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            <?php
+            session_start();
+            if(isset($_SESSION['login'])){
+                echo "<a href='logout.php' id='logout-btn'>";
+                echo "    <li>🚪 Wyloguj</li>";
+                echo "</a>";
+            }
+            ?>
         </ul>
     </menu>
     <main>

@@ -21,7 +21,7 @@ body {
 
 #nav > ul > a > li, #nav > ul > li > input {
     margin: 0;
-    margin-left: 10%;
+    margin-left: 7%;
     float: left;
     color: black;
     transition: transform 0.5s;
@@ -288,6 +288,6 @@ button.next {
         width: 80%;
     }
     #nav > ul > a > li, #nav > ul > li > input {
-        margin-left: 2%;
+        margin-left: 1%;
         }
 }
