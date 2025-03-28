@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 23, 2025 at 09:40 PM
+-- Generation Time: Mar 28, 2025 at 07:13 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -66,7 +66,8 @@ INSERT INTO `egzemplarze` (`id`, `id_przedmiotu`, `id_magazynu`, `stan`, `opis`,
 (7, 8, 2, 'Nowy', '', 10, '2025-03-23 19:27:16'),
 (8, 9, 2, 'Nowy', '', 5, '2025-03-23 19:34:03'),
 (9, 10, 2, 'Nowy', '', 2, '2025-03-23 19:43:40'),
-(10, 11, 1, 'Nowy', '', 20, '2025-03-23 19:57:09');
+(10, 11, 1, 'Nowy', 'kupione na allegro', 22, '2025-03-23 19:57:00'),
+(11, 5, 2, 'Nowy', '', 1500, '2025-03-27 20:04:25');
 
 -- --------------------------------------------------------
 
@@ -107,7 +108,7 @@ CREATE TABLE `magazyny` (
 --
 
 INSERT INTO `magazyny` (`id`, `nazwa`, `zdjecie`, `lokalizacja`) VALUES
-(1, 'główny', 'upload/67e06ffb3bbb2_obraz_2025-03-23_213239922.png', 'Warszawa - centrum'),
+(1, 'główny', 'upload\\67e06ffb3bbb2_obraz_2025-03-23_213239922.png', 'Warszawa - centrum'),
 (2, 'zapasowy - Kraków', 'upload/67e07069b5aaf_obraz_2025-03-23_213433510.png', 'Kraków - centrum');
 
 -- --------------------------------------------------------
@@ -133,13 +134,13 @@ INSERT INTO `przedmioty` (`id`, `nazwa`, `opis`, `zdjecie`, `id_kat`) VALUES
 (2, 'młotek lekki', '', '', 3),
 (3, 'młotek ciężki', '', '', 3),
 (4, 'wiertarko-wkrętarka Parkside', '', '', 2),
-(5, 'śruba 5x10', '', '', 4),
+(5, 'śruba 5x10', 'śruba', '', 4),
 (6, 'śruba 5x15', '', '', 4),
 (7, 'śruba 7x15', '', '../images/product.png', 4),
 (8, 'kabel Rj-45 10m', '', '', 1),
 (9, 'kabel zasilający C13', '', 'upload/67e0622b1b975_obraz_2025-03-23_203337282.png', 1),
 (10, 'przewód 3x2,5 100m', '', 'upload/67e0646c2d6c7_obraz_2025-03-23_204321254.png', 1),
-(11, 'ESP8266 NodeMcu v3', '', 'upload/67e067956f930_obraz_2025-03-23_205700830.png', 1);
+(11, 'ESP8266 NodeMcu v3', 'płytka', 'upload\\67e067956f930_obraz_2025-03-23_205700830.png', 1);
 
 -- --------------------------------------------------------
 
@@ -152,9 +153,18 @@ CREATE TABLE `uzytkownicy` (
   `imie` varchar(20) DEFAULT NULL,
   `nazwisko` varchar(20) DEFAULT NULL,
   `login` varchar(35) DEFAULT NULL,
-  `haslo` varchar(50) DEFAULT NULL,
-  `uprawnienia` enum('0','1','2') DEFAULT NULL
+  `haslo` varchar(100) DEFAULT NULL,
+  `uprawnienia` enum('0','1','2') DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `uzytkownicy`
+--
+
+INSERT INTO `uzytkownicy` (`id`, `imie`, `nazwisko`, `login`, `haslo`, `uprawnienia`) VALUES
+(1, 'Kajetan', 'Kufieta', 'admin', '$2y$10$JVm3kp2JWIzo577r/Ooq5.B9HtjstpkImK/SSpEE6bkaO/qlua8TG', '2'),
+(2, 'Andrzej', 'Kowalski', 'andrzej', '$2y$10$SrQqTakgbwrXHT2tuTUP6.8MG/P9YS/l6TQETRpbWMHa5agmPjmLS', '1'),
+(3, 'Arek', 'Lewandowski', 'areczek', '$2y$10$Bq56U6w06DMD2UTktLNgNePlo7/OJ2PBAkLSw89d60HYuu69usA3u', '0');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -209,7 +219,7 @@ ALTER TABLE `uzytkownicy`
 -- AUTO_INCREMENT for table `egzemplarze`
 --
 ALTER TABLE `egzemplarze`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `kategorie`
@@ -221,13 +231,19 @@ ALTER TABLE `kategorie`
 -- AUTO_INCREMENT for table `magazyny`
 --
 ALTER TABLE `magazyny`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `przedmioty`
 --
 ALTER TABLE `przedmioty`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `uzytkownicy`
+--
+ALTER TABLE `uzytkownicy`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

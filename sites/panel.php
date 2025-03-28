@@ -40,10 +40,23 @@
     </menu>
     <main>
         <?php
+        $db = mysqli_connect('localhost', 'root', '', 'magazyn');
         if(isset($_SESSION['power'])){
+
             echo "<section id='mainPanel'>";
-            echo "<h1>Witaj ". $_SESSION['name'] ."</h1>";
-            echo "<p>Zalogowano jako ". $_SESSION['login'] ." ";
+                echo "<h1>Witaj ". $_SESSION['name'] ."</h1>";
+                echo "<p>Zalogowano jako ". $_SESSION['login'] ." ";
+                echo "<br><br>";
+                echo "<h1>Twoja historia zmian</h1>";
+                $historySelect = "SELECT dziennik_zmian.id, przedmioty.nazwa, akcja, dziennik_zmian.opis, data_zmiany FROM dziennik_zmian INNER JOIN egzemplarze ON egzemplarze.id = dziennik_zmian.id_egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id WHERE id_uzytkownika = '" . $_SESSION['id'] . "'";
+                $historyQuery = mysqli_query($db, $historySelect);
+                echo "<table class='normalTable'";
+                echo "<tr> <th>id</th> <th>nazwa przedmiotu</th> <th>akcja</th> <th>opis</th> <th>data zmiany</th> </tr>";
+                while($historyRow = mysqli_fetch_row($historyQuery)){
+                    echo "<tr>";
+                    echo "<td>$historyRow[0]</td> <td>$historyRow[1]</td> <td>$historyRow[2]</td> <td>$historyRow[3]</td> <td>$historyRow[4]</td> ";
+                    echo "</tr>";
+                }
             echo "</section>";
         }
         else if(!isset($_GET['singup'])){
@@ -77,9 +90,6 @@
         }
         ?>
         <?php
-            
-            $db = mysqli_connect('localhost', 'root', '', 'magazyn');
-
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if(isset($_POST['name'])){
                     $login = $_POST['login'];
@@ -114,13 +124,14 @@
                     $q = mysqli_query($db, $s);
                     if($fRow = mysqli_fetch_row($q)){
                         if(password_verify($password, $fRow[0])){
-                            $userSelect = "SELECT imie, nazwisko, login, uprawnienia FROM uzytkownicy WHERE login = '$login';";
+                            $userSelect = "SELECT imie, nazwisko, login, uprawnienia, id FROM uzytkownicy WHERE login = '$login';";
                             $userQuery = mysqli_query($db, $userSelect);
                             while($userData = mysqli_fetch_row($userQuery)){
                                 $_SESSION['name'] = $userData[0];
                                 $_SESSION['lastName'] = $userData[1];
                                 $_SESSION['login'] = $userData[2];
                                 $_SESSION['power'] = $userData[3];
+                                $_SESSION['id'] = $userData[4];
                             }
                             echo "<script>
                                     alert('Zalogowano!');
@@ -154,7 +165,7 @@
                 }
                 return "dobre";
             }
-            
+            mysqli_close($db);
         ?>
     </main>
 </body>

@@ -10,6 +10,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <?php
+        session_start();
+        include '../functions.php';
+
+        if(!checkLogin()){
+            echo "<script>
+                alert('Zaloguj się!');
+                window.location.href = 'panel.php';
+            </script>";
+        }
+    ?>
     <!-- menu strony -->
     <menu id="nav">
         <ul>
@@ -30,121 +41,111 @@
             
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
             <?php
-            session_start();
-            if(isset($_SESSION['login'])){
-                echo "<a href='logout.php' id='logout-btn'>";
-                echo "    <li>🚪 Wyloguj</li>";
-                echo "</a>";
-            }
+                if(isset($_SESSION['login'])){
+                    echo "<a href='logout.php' id='logout-btn'>";
+                    echo "    <li>🚪 Wyloguj</li>";
+                    echo "</a>";
+                }
             ?>
         </ul>
     </menu>
     <main>
         <section class="availableItems">
-            <h1>Dostępne egzemplarze przedmiotu</h1>
+            <h1>Dostępne egzemplarze przedmiotów w magazynie</h1>
             <table class="normalTable">
                 <?php
                     $db = mysqli_connect('localhost', 'root', '', 'magazyn');
                     echo "<tr>";
-                    echo "<th>przedmiot</th> <th>magazyn</th> <th>lokalizacja magazynu</th> <th>ilość</th> <th>data dodania</th> <th>Edytuj</th>";
+                    echo "<th>przedmiot</th> <th>ilość</th> <th>data dodania</th>";
+                    if(checkPowerDifferentThan(0)){
+                        echo "<th>Edytuj</th>";
+                    }
                     echo "</tr>";
-                    $s = "SELECT przedmioty.nazwa, magazyny.nazwa, magazyny.lokalizacja, ilosc, data_dodania FROM egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id WHERE przedmioty.nazwa='". $_GET['nazwa']."'";
+                    $s = "SELECT przedmioty.nazwa, ilosc, data_dodania FROM egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id WHERE magazyny.nazwa='". $_GET['nazwa']."'";
                     $q = mysqli_query($db, $s);
                     while($fRow = mysqli_fetch_row($q)){
                         echo "<tr>";
-                        echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td>$fRow[2]</td> <td>$fRow[3]</td> <td>$fRow[4]</td>  <td><a href='item_details.php?nazwa=$fRow[0]'>Edytuj</a></td>";
+                        echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td>$fRow[2]</td> "; 
+                        if(checkPowerDifferentThan(0)){
+                            echo "<td><a href='item_details.php?nazwa=$fRow[0]'>Edytuj</a></td>";
+                        }
                         echo "</tr>";
                     }   
                 ?>
             </table>
         </section>
-        <section id="itemInfo">
-            <button id="editButton" onclick="toggleForm()">Edytuj przedmiot</button>
-            <br>
-
-            <form action="" method="post" enctype="multipart/form-data" id="editForm" style="display: none;">
-                <div class="photoContainer">
-                    <?php
+        <?php
+        if(checkPowerDifferentThan(0)){
+            echo "<section id='itemInfo'>";
+                echo "<button id='editButton' onclick='toggleForm()'>Edytuj Magazyn</button>";
+                echo "<br>";
+                echo "<form action='' method='post' enctype='multipart/form-data' id='editForm' style='display: none;'>";
+                    echo "<div class='photoContainer'>";
                         $db = mysqli_connect('localhost', 'root', '', 'magazyn');
-                        $s = "SELECT przedmioty.nazwa, opis, zdjecie, kategorie.nazwa FROM przedmioty INNER JOIN kategorie ON przedmioty.id_kat = kategorie.id WHERE przedmioty.nazwa = '" .$_GET['nazwa'] ."'";
-                        $q = mysqli_query($db, $s);
-                        $fRow = mysqli_fetch_row($q);
+                        $s = "SELECT nazwa, zdjecie, lokalizacja FROM magazyny WHERE magazyny.nazwa = '" .$_GET['nazwa'] ."'";
+                        $q = mysqli_query($db, $s);;
+                        $fRow = mysqli_fetch_row($q);;
                         if($fRow[2] == "" || $fRow[2] =="null"){
-                            echo "<img id='previewImg' src='../images/product.png' alt='zdjęcie przedmiotu'>";
+                        echo "<img id='previewImg' src='../images/product.png' alt='zdjęcie magazynu'>";
                         }else{
-                            echo  "<img id='previewImg' src='../$fRow[2]' alt='zdjęcie przedmiotu'>";
+                        echo  "<img id='previewImg' src='../$fRow[1]' alt='zdjęcie magazynu'>";
                         }
-
-                    ?>
-                    <br>
-                    <label for="photo">Wybierz zdjęcie przedmiotu:</label>
-                    <input type="file" name="photo" id="photo" accept="image/*">
-                    <br>
-                    <input type="checkbox" name="no_photo" id="no_photo">
-                    <label for="no_photo">Brak zdjęcia</label>
-                </div>
-                <br>
-                <label for="name">Nazwa przedmiotu: </label>
-                <?php
-                    if($fRow[0] == "" || $fRow[0] =="null"){
-                        echo "<input type='text' name='name' id='name' required>";
-                    }else{
-                        echo "<input type='text' name='name' id='name' value='$fRow[0]' required>";
-                    }
-                ?>
-                <br>
-                <label for="description">Opis przedmiotu: </label>
-                <?php
-                    if($fRow[1] == "" || $fRow[1] =="null"){
-                        echo "<input type='text' name='description' id='description'>";
-                    }else{
-                        echo "<input type='text' name='description' id='description' value='$fRow[1]'>";
-                    }
-                ?>
-                <br>
-                <label for="category">Wybierz kategorię przedmiotu: </label>
-                <select name="category" id="category">
-                    <?php
-                        $db = mysqli_connect('localhost', 'root', '', 'magazyn');
-                        $s = "SELECT nazwa FROM kategorie;";
-                        $q = mysqli_query($db, $s);
-                        while($fRow2 = mysqli_fetch_row($q)){
-                            if($fRow[3] == $fRow2[0])
-                                echo "<option value='$fRow2[0]' selected>$fRow2[0]</option>";
-                            else
-                            echo "<option value='$fRow2[0]'>$fRow2[0]</option>";
-                        }
-                    ?>
-                </select>
-                <br>
-                <input type="submit" value="Zapisz">
-            </form>
-        </section>
+                        echo "<br>";
+                        echo "<label for='photo'>Wybierz zdjęcie magazynu:</label>";
+                        echo "<input type='file' name='photo' id='photo' accept='image/*'>";
+                        echo "<br>";
+                        echo "<input type='checkbox' name='no_photo' id='no_photo' checked>";
+                        echo "<label for='no_photo'>Brak zdjęcia</label>";
+                    echo "</div>";
+                echo "<br>";
+                echo "<label for='name'>Nazwa magazynu: </label>";
+                if($fRow[0] == "" || $fRow[0] =="null"){
+                    echo "<input type='text' name='name' id='name' required>";
+                }else{
+                echo "<input type='text' name='name' id='name' value='$fRow[0]' required>";
+                }
+                echo "<br>";
+                echo "<label for='location'>lokalizacja: </label>";
+                if($fRow[1] == "" || $fRow[1] =="null"){
+                echo "<input type='text' name='location' id='location'>";
+                }else{
+                echo "<input type='text' name='location' id='location' value='$fRow[2]'>";
+                };
+                echo "<br>";
+                echo "<input type='submit' value='Zapisz'>";
+                echo "</form>";
+            echo "</section>";
+        }
+        ?>
         <script>
-             function toggleForm() {
-            var form = document.getElementById('editForm');
-            if (form.style.display === 'none') {
-                form.style.display = 'block'; // Pokazuje formularz
-            } else {
-                form.style.display = 'none'; // Ukrywa formularz
-            }
+            function toggleForm() {
+                var form = document.getElementById('editForm');
+                if (form.style.display === 'none') {
+                    form.style.display = 'block'; // Pokazuje formularz
+                } else {
+                    form.style.display = 'none'; // Ukrywa formularz
+                }
             }
             document.getElementById('photo').addEventListener('change', function(event) {
-            let reader = new FileReader();
-            reader.onload = function(){
-                document.getElementById('previewImg').src = reader.result;
-            }
-            if (event.target.files.length) {
-                reader.readAsDataURL(event.target.files[0]);
-            }
-        });
+                let reader = new FileReader();
+                let noPhotoCheckbox = document.getElementById('no_photo');
+                
+                if (this.files.length > 0) {
+                    noPhotoCheckbox.checked = false;
+                }
+                reader.onload = function(){
+                    document.getElementById('previewImg').src = reader.result;
+                }
+                if (event.target.files.length) {
+                    reader.readAsDataURL(event.target.files[0]);
+                }
+            });
         </script>
         <?php
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $name = trim($_POST["name"]);
-                $description = trim($_POST["description"]);
-                $category = trim($_POST["category"]);
+                $location = trim($_POST["location"]);
                 $photoPath = "";
 
                 if (!isset($_POST["no_photo"]) && isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
@@ -170,25 +171,18 @@
                         echo "Nieobsługiwany format pliku.";
                     }
                 }
-
-                // Zapis do bazy danych
-                
-                //pobieranie id kategorii
-                $catIdMysql = mysqli_query($db, "SELECT id FROM kategorie WHERE nazwa='$category'");
-                if ($catIdMysql && $catId = mysqli_fetch_row($catIdMysql)) {
-                    $catId = $catId[0];
-                } else {
-                    die("Błąd: Nie znaleziono kategorii '$category'.");
+                //wstawienie do bazy danych nowych danych o magazynie
+                if($photoPath == ""){
+                    $upd = "UPDATE magazyny SET nazwa = '$name', lokalizacja = '$location' WHERE nazwa = '" . $_GET['nazwa'] . "'";
+                }else{
+                    $upd = "UPDATE magazyny SET nazwa = '$name', zdjecie = '$photoPath', lokalizacja = '$location' WHERE nazwa = '" . $_GET['nazwa'] . "'";
                 }
-                //wstawianie do bazy danych egzemplarzu(y)
-                $ins = "INSERT INTO egzemplarze(id_przedmiotu, id_magazynu, ilosc) 
-                VALUES ($itemId, $warehouseId, $amount)";
         
-                if (!mysqli_query($db, $ins)) {
+                if (!mysqli_query($db, $upd)) {
                     die("Błąd SQL (egzemplarze): " . mysqli_error($db));
                 }
 
-                echo "✅ Przedmiot został dodany poprawnie!";
+                echo "✅ magazyn został edytowany poprawnie!";
                 mysqli_close($db);
             }
         ?>

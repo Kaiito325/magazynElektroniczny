@@ -10,6 +10,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <?php
+        session_start();
+        include 'functions.php';
+
+        if(!checkLogin()){
+            echo "<script>
+                alert('Zaloguj się!');
+                window.location.href = 'sites/panel.php';
+            </script>";
+        }
+    ?>
     <!-- menu strony -->
     <menu id="nav">
         <ul>
@@ -30,12 +41,11 @@
             
             <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
             <?php
-            session_start();
-            if(isset($_SESSION['login'])){
-                echo "<a href='logout.php' id='logout-btn'>";
-                echo "    <li>🚪 Wyloguj</li>";
-                echo "</a>";
-            }
+                if(isset($_SESSION['login'])){
+                    echo "<a href='sites/logout.php' id='logout-btn'>";
+                    echo "    <li>🚪 Wyloguj</li>";
+                    echo "</a>";
+                }
             ?>
         </ul>
     </menu>
