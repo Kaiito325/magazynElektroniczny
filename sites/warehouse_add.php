@@ -46,7 +46,9 @@
                 ?>
             </a>
             
-            <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            <form action="search.php" method="get">
+                <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            </form>
             <?php
                 if(isset($_SESSION['login'])){
                     echo "<a href='logout.php' id='logout-btn'>";

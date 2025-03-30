@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- menu strony -->
     <?php
         session_start();
         include '../functions.php';
@@ -20,8 +21,14 @@
                 window.location.href = 'panel.php';
             </script>";
         }
+
+        if(checkPowerDifferentThan(2)){
+            echo "<script>
+                alert('Brak uprawnień!');
+                window.location.href = '../index.php';
+            </script>";
+        }
     ?>
-    <!-- menu strony -->
     <menu id="nav">
         <ul>
             <a href="../index.php">
@@ -38,44 +45,34 @@
                     echo "<li>Panel</li>";
                 ?>
             </a>
-            
             <form action="search.php" method="get">
                 <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
             </form>
             <?php
-                if(isset($_SESSION['login'])){
-                    echo "<a href='logout.php' id='logout-btn'>";
-                    echo "    <li>🚪 Wyloguj</li>";
-                    echo "</a>";
-                }
+            if(isset($_SESSION['login'])){
+                echo "<a href='logout.php' id='logout-btn'>";
+                echo "    <li>🚪 Wyloguj</li>";
+                echo "</a>";
+            }
             ?>
         </ul>
     </menu>
     <main>
-        <section id="items">
-            <h1>Magazyny</h1>
-            <table class="normalTable">
-
+        <section id='allHistory'>
+            <h1>Cała historia</h1>
             <?php
-                $db = mysqli_connect('localhost','root','','magazyn');
-                echo "<tr>";
-                echo "<th>nazwa</th> <th>lokalizacja</th> <th>szczegóły</th>";
-                echo "</tr>";
-                $s = "SELECT nazwa, lokalizacja FROM magazyny;";
-                $q = mysqli_query($db, $s);
-                while($fRow = mysqli_fetch_row($q)){
+                $db = mysqli_connect('localhost', 'root', '', 'magazyn');
+                $historySelect = "SELECT dziennik_zmian.id, id_uzytkownika, przedmioty.nazwa, akcja, dziennik_zmian.opis, data_zmiany FROM dziennik_zmian INNER JOIN egzemplarze ON egzemplarze.id = dziennik_zmian.id_egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id ORDER BY data_zmiany";
+                $historyQuery = mysqli_query($db, $historySelect);
+                echo "<table class='normalTable'";
+                echo "<tr>  <th>id</th> <th>id użytkownika</th> <th>nazwa przedmiotu</th> <th>akcja</th> <th>opis</th> <th>data zmiany</th> </tr>";
+                while($historyRow = mysqli_fetch_row($historyQuery)){
                     echo "<tr>";
-                    echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td><a href='warehouse_details.php?nazwa=$fRow[0]'>Szczegóły</a></td>";
+                    echo "<td>$historyRow[0]</td> <td>$historyRow[1]</td> <td>$historyRow[2]</td> <td>$historyRow[3]</td> <td>$historyRow[4]</td> <td>$historyRow[5]</td> ";
                     echo "</tr>";
                 }
-                mysqli_close($db);
+                echo "</table>"
             ?>
-            </table>
         </section>
-        <?php
-            if(checkPowerDifferentThan(0)){
-                echo "<a href='warehouse_add.php' class='addButton'></a>";
-            }
-        ?>
     </main>
 </body>

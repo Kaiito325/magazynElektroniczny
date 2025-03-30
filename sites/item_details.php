@@ -39,7 +39,9 @@
                 ?>
             </a>
             
-            <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            <form action="search.php" method="get">
+                <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            </form>
             <?php
                 if(isset($_SESSION['login'])){
                     echo "<a href='logout.php' id='logout-btn'>";
@@ -197,18 +199,61 @@
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if(isset($_GET['id'])){
+                    $id = $_GET['id'];
+
+                    $q = "SELECT id_przedmiotu, id_magazynu, stan, opis, ilosc, data_dodania FROM egzemplarze WHERE id = $id";
+                    $result = mysqli_query($db, $q);
+                    $currentData = mysqli_fetch_assoc($result);
+
                     $warehouseId = substr($_POST['warehouseName'], 0, 1);
                     $state = $_POST['state'];
                     $description = $_POST['description'];
                     $amount = $_POST['amount'];
                     $date = $_POST['date'];
                     $time = $_POST['time'];
-                    $id = $_GET['id'];
                     $fullDate = $date . " " . $time . ":00";
+
+                    $changes = [];
+                    $changesDescription = [];
+
+                    if ($currentData['id_magazynu'] != $warehouseId) {
+                        $changes[] = "id_magazynu='$warehouseId'";
+                        $changesDescription[] = "Magazyn: {$currentData['id_magazynu']} → $warehouseId";
+                    }
+                    if ($currentData['stan'] != $state) {
+                        $changes[] = "stan='$state'";
+                        $changesDescription[] = "Stan: {$currentData['stan']} → $state";
+                    }
+                    if ($currentData['opis'] != $description) {
+                        $changes[] = "opis='$description'";
+                        $changesDescription[] = "Opis zmieniony";
+                    }
+                    if ($currentData['ilosc'] != $amount) {
+                        $changes[] = "ilosc='$amount'";
+                        $changesDescription[] = "Ilość: {$currentData['ilosc']} → $amount";
+                    }
+                    if (substr($currentData['data_dodania'], 0, 16) != substr($fullDate, 0, 16)) {
+                        $changes[] = "data_dodania='$fullDate'";
+                        $changesDescription[] = "Data dodania: {$currentData['data_dodania']} → $fullDate";
+                    }
+
+                    $descriptionText = implode(", ", $changesDescription);
+
                     //edycja egzemplarzu
-                    $upd = "UPDATE egzemplarze SET id_magazynu='$warehouseId', stan='$state', opis='$description', ilosc='$amount', data_dodania='$fullDate' WHERE id='$id'";
+                    $upd = "UPDATE egzemplarze SET " . implode(", ", $changes) . " WHERE id='$id'";
                     if (!mysqli_query($db, $upd)) {
                         die("Błąd SQL (egzemplarze): " . mysqli_error($db));
+                    }
+
+                    //wstawianie zapisu do dziennika zmian
+                    if (!empty($descriptionText)) {
+                        // Tworzymy zapytanie SQL z opisem zmian
+                        $insHistory = "INSERT INTO dziennik_zmian(id_egzemplarze, id_uzytkownika, akcja, opis)
+                                       VALUES ('$id', '" . $_SESSION['id'] . "', 'Edycja egzemplarza', '" . mysqli_real_escape_string($db, $descriptionText) . "')";
+                    
+                        if (!mysqli_query($db, $insHistory)) {
+                            die("Błąd SQL (dziennik_zmian): " . mysqli_error($db));
+                        }
                     }
                     
                     echo "<script>

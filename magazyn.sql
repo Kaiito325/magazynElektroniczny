@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 28, 2025 at 07:13 PM
+-- Generation Time: Mar 30, 2025 at 10:39 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -36,6 +36,18 @@ CREATE TABLE `dziennik_zmian` (
   `data_zmiany` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `dziennik_zmian`
+--
+
+INSERT INTO `dziennik_zmian` (`id`, `id_egzemplarze`, `id_uzytkownika`, `akcja`, `opis`, `data_zmiany`) VALUES
+(1, 13, 1, 'dodanie wpisu', NULL, '2025-03-30 15:43:01'),
+(2, 13, 1, 'Edycja egzemplarza', 'Ilość: 6 → 7', '2025-03-30 16:23:40'),
+(3, 13, 1, 'Edycja egzemplarza', 'Magazyn: 2 → 1, Stan: Nowy2 → Nowy, Ilość: 7 → 10', '2025-03-30 16:24:30'),
+(4, 14, 1, 'dodanie egzemplarzu', NULL, '2025-03-30 19:41:23'),
+(5, 10, 2, 'Edycja egzemplarza', 'Ilość: 22 → 20', '2025-03-30 20:13:40'),
+(6, 15, 2, 'dodanie egzemplarzu', NULL, '2025-03-30 20:14:01');
+
 -- --------------------------------------------------------
 
 --
@@ -66,8 +78,11 @@ INSERT INTO `egzemplarze` (`id`, `id_przedmiotu`, `id_magazynu`, `stan`, `opis`,
 (7, 8, 2, 'Nowy', '', 10, '2025-03-23 19:27:16'),
 (8, 9, 2, 'Nowy', '', 5, '2025-03-23 19:34:03'),
 (9, 10, 2, 'Nowy', '', 2, '2025-03-23 19:43:40'),
-(10, 11, 1, 'Nowy', 'kupione na allegro', 22, '2025-03-23 19:57:00'),
-(11, 5, 2, 'Nowy', '', 1500, '2025-03-27 20:04:25');
+(10, 11, 1, 'Nowy', 'kupione na allegro', 20, '2025-03-23 19:57:00'),
+(11, 5, 2, 'Nowy', '', 1500, '2025-03-27 20:04:25'),
+(13, 13, 1, 'Nowy', '', 10, '2025-03-30 15:43:01'),
+(14, 1, 1, 'nowy', '', 1, '2025-03-30 19:41:23'),
+(15, 9, 2, 'nowy', '', 10, '2025-03-30 20:14:01');
 
 -- --------------------------------------------------------
 
@@ -140,7 +155,8 @@ INSERT INTO `przedmioty` (`id`, `nazwa`, `opis`, `zdjecie`, `id_kat`) VALUES
 (8, 'kabel Rj-45 10m', '', '', 1),
 (9, 'kabel zasilający C13', '', 'upload/67e0622b1b975_obraz_2025-03-23_203337282.png', 1),
 (10, 'przewód 3x2,5 100m', '', 'upload/67e0646c2d6c7_obraz_2025-03-23_204321254.png', 1),
-(11, 'ESP8266 NodeMcu v3', 'płytka', 'upload\\67e067956f930_obraz_2025-03-23_205700830.png', 1);
+(11, 'ESP8266 NodeMcu v3', 'płytka', 'upload\\67e067956f930_obraz_2025-03-23_205700830.png', 1),
+(13, 'bulbulator', '', '', 1);
 
 -- --------------------------------------------------------
 
@@ -216,10 +232,16 @@ ALTER TABLE `uzytkownicy`
 --
 
 --
+-- AUTO_INCREMENT for table `dziennik_zmian`
+--
+ALTER TABLE `dziennik_zmian`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `egzemplarze`
 --
 ALTER TABLE `egzemplarze`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `kategorie`
@@ -237,7 +259,7 @@ ALTER TABLE `magazyny`
 -- AUTO_INCREMENT for table `przedmioty`
 --
 ALTER TABLE `przedmioty`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `uzytkownicy`

@@ -39,7 +39,9 @@
                 ?>
             </a>
             
-            <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            <form action="search.php" method="get">
+                <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            </form>
             <?php
                 if(isset($_SESSION['login'])){
                     echo "<a href='logout.php' id='logout-btn'>";
@@ -57,18 +59,14 @@
                     $db = mysqli_connect('localhost', 'root', '', 'magazyn');
                     echo "<tr>";
                     echo "<th>przedmiot</th> <th>ilość</th> <th>data dodania</th>";
-                    if(checkPowerDifferentThan(0)){
-                        echo "<th>Edytuj</th>";
-                    }
+                    echo "<th>Szczegóły</th>";
                     echo "</tr>";
                     $s = "SELECT przedmioty.nazwa, ilosc, data_dodania FROM egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id WHERE magazyny.nazwa='". $_GET['nazwa']."'";
                     $q = mysqli_query($db, $s);
                     while($fRow = mysqli_fetch_row($q)){
                         echo "<tr>";
                         echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td>$fRow[2]</td> "; 
-                        if(checkPowerDifferentThan(0)){
-                            echo "<td><a href='item_details.php?nazwa=$fRow[0]'>Edytuj</a></td>";
-                        }
+                        echo "<td><a href='item_details.php?nazwa=$fRow[0]'>Szczegóły</a></td>";
                         echo "</tr>";
                     }   
                 ?>

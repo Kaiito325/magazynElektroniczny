@@ -39,7 +39,9 @@
                 ?>
             </a>
             
-            <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            <form action="sites/search.php" method="get">
+                <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            </form>
             <?php
                 if(isset($_SESSION['login'])){
                     echo "<a href='sites/logout.php' id='logout-btn'>";
@@ -104,7 +106,7 @@
                         echo "brak </h3>";
                     echo "</a></div>";
                     }
-                    mysqli_close($db);
+                    
                 ?>
             </div>
         </section>
@@ -114,9 +116,22 @@
             if($_SESSION['power'] == '2'){
                 echo "<section id='history'>";
                 echo "<h2>Ostatnie zmiany</h2>";
+                echo "<div class='itemHolder'>";
+                $s = "SELECT akcja, id_egzemplarze, przedmioty.nazwa FROM dziennik_zmian INNER JOIN egzemplarze ON dziennik_zmian.id_egzemplarze = egzemplarze.id 
+                    INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id ORDER BY data_zmiany DESC LIMIT 4;";
+                $q = mysqli_query($db, $s);
+                while($fRow = mysqli_fetch_row($q)){
+                    echo "<a href='sites/item_details.php?nazwa=$fRow[2]'><div class='dataLog item'>";
+                    echo "<h2>$fRow[0]</h2>";
+                    echo "<h3>id egzemplarza: ";
+                    echo "$fRow[1]</h3>";
+                    echo "</a></div>";
+                    }
+            echo "</div>";
                 echo "</section>";
             }
          }
+         mysqli_close($db);
         ?>
     </main>
     <script>

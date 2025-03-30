@@ -39,7 +39,9 @@
                 ?>
             </a>
             
-            <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            <form action="search.php" method="get">
+                <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            </form>
             <?php
                 if(isset($_SESSION['login'])){
                     echo "<a href='logout.php' id='logout-btn'>";
@@ -57,13 +59,13 @@
             <?php
                 $db = mysqli_connect('localhost','root','','magazyn');
                 echo "<tr>";
-                echo "<th>przedmiot</th> <th>magazyn</th> <th>ilość</th> <th>szczegóły</th>";
+                echo "<th>id</th> <th>przedmiot</th> <th>magazyn</th> <th>ilość</th> <th>szczegóły</th>";
                 echo "</tr>";
-                $s = "SELECT przedmioty.nazwa, GROUP_CONCAT(DISTINCT magazyny.nazwa), SUM(ilosc) FROM egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id GROUP BY przedmioty.nazwa ORDER BY przedmioty.nazwa;";
+                $s = "SELECT przedmioty.id, przedmioty.nazwa, GROUP_CONCAT(DISTINCT magazyny.nazwa), SUM(ilosc) FROM egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id INNER JOIN magazyny ON egzemplarze.id_magazynu = magazyny.id GROUP BY przedmioty.nazwa ORDER BY przedmioty.id ;";
                 $q = mysqli_query($db, $s);
                 while($fRow = mysqli_fetch_row($q)){
                     echo "<tr>";
-                    echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td>$fRow[2]</td> <td><a href='item_details.php?nazwa=$fRow[0]'>Szczegóły</a></td>";
+                    echo "<td>$fRow[0]</td> <td>$fRow[1]</td> <td>$fRow[2]</td> <td>$fRow[3]</td> <td><a href='item_details.php?nazwa=$fRow[1]'>Szczegóły</a></td>";
                     echo "</tr>";
                 }
                 mysqli_close($db);
@@ -72,8 +74,37 @@
         </section>
         <?php
             if(checkPowerDifferentThan(0)){
-                echo "<a href='item_add.php' class='addButton'></a>";
+                echo "<div id='buttons'>";
+                echo "<a href='item_add.php' id='addItem' class='addButton' onclick='return handleClick(event)'></a>";
+                echo "</div>";
             }
         ?>
+        <script>
+        let editButtonShown = false; 
+        function handleClick(event) {
+            if (!editButtonShown) {
+                event.preventDefault(); 
+
+                let container = document.getElementById("buttons");
+
+                let addItemButton = document.getElementById('addItem');
+
+                let editButton = document.createElement("a");
+                editButton.id = "editButton";
+                editButton.href = "item_add.php?piece=";
+
+                addItemButton.innerText = "Przedmiot";
+                addItemButton.style = "border-radius: 10%;";
+
+                editButton.style = "position: fixed; right: 250px; margin: 0;";
+                editButton.innerText = "Egzemplarz";
+                editButton.classList.add("addButton");
+
+                container.appendChild(editButton);
+                editButtonShown = true;
+            }
+            return editButtonShown; 
+        }
+        </script>
     </main>
 </body>

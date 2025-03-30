@@ -6,7 +6,7 @@
         return false;
     }
     function checkPowerDifferentThan($x){
-        if($_SESSION['power'] != '0'){
+        if($_SESSION['power'] != $x){
             return true;
         }
         return false;

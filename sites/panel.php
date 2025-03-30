@@ -27,9 +27,12 @@
                     echo "<li>Panel</li>";
                 ?>
             </a>
-            <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            <form action="search.php" method="get">
+                <li><input type="text" name="search" id="search" placeholder="🔍    szukaj"></li>
+            </form>
             <?php
             session_start();
+            include '../functions.php';
             if(isset($_SESSION['login'])){
                 echo "<a href='logout.php' id='logout-btn'>";
                 echo "    <li>🚪 Wyloguj</li>";
@@ -47,15 +50,21 @@
                 echo "<h1>Witaj ". $_SESSION['name'] ."</h1>";
                 echo "<p>Zalogowano jako ". $_SESSION['login'] ." ";
                 echo "<br><br>";
-                echo "<h1>Twoja historia zmian</h1>";
-                $historySelect = "SELECT dziennik_zmian.id, przedmioty.nazwa, akcja, dziennik_zmian.opis, data_zmiany FROM dziennik_zmian INNER JOIN egzemplarze ON egzemplarze.id = dziennik_zmian.id_egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id WHERE id_uzytkownika = '" . $_SESSION['id'] . "'";
-                $historyQuery = mysqli_query($db, $historySelect);
-                echo "<table class='normalTable'";
-                echo "<tr> <th>id</th> <th>nazwa przedmiotu</th> <th>akcja</th> <th>opis</th> <th>data zmiany</th> </tr>";
-                while($historyRow = mysqli_fetch_row($historyQuery)){
-                    echo "<tr>";
-                    echo "<td>$historyRow[0]</td> <td>$historyRow[1]</td> <td>$historyRow[2]</td> <td>$historyRow[3]</td> <td>$historyRow[4]</td> ";
-                    echo "</tr>";
+                if(!checkPowerDifferentThan(2)){
+                        echo "<button id='editButton'><a href='history.php'>Zobacz całą historię</a></button>";
+                }
+                if(checkPowerDifferentThan(0)){
+                    echo "<h1>Twoja historia zmian</h1>";
+                    $historySelect = "SELECT dziennik_zmian.id, przedmioty.nazwa, akcja, dziennik_zmian.opis, data_zmiany FROM dziennik_zmian INNER JOIN egzemplarze ON egzemplarze.id = dziennik_zmian.id_egzemplarze INNER JOIN przedmioty ON egzemplarze.id_przedmiotu = przedmioty.id WHERE id_uzytkownika = '" . $_SESSION['id'] . "'";
+                    $historyQuery = mysqli_query($db, $historySelect);
+                    echo "<table class='normalTable'";
+                    echo "<tr> <th>id</th> <th>nazwa przedmiotu</th> <th>akcja</th> <th>opis</th> <th>data zmiany</th> </tr>";
+                    while($historyRow = mysqli_fetch_row($historyQuery)){
+                        echo "<tr>";
+                        echo "<td>$historyRow[0]</td> <td>$historyRow[1]</td> <td>$historyRow[2]</td> <td>$historyRow[3]</td> <td>$historyRow[4]</td> ";
+                        echo "</tr>";
+                    }
+                    
                 }
             echo "</section>";
         }
