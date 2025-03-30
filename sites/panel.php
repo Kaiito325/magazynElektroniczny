@@ -51,6 +51,9 @@
                 echo "<p>Zalogowano jako ". $_SESSION['login'] ." ";
                 echo "<br><br>";
                 if(!checkPowerDifferentThan(2)){
+                    echo "<button id='editButton'><a href='users.php'>Użytkownicy</a></button><br>";
+                }
+                if(!checkPowerDifferentThan(2)){
                         echo "<button id='editButton'><a href='history.php'>Zobacz całą historię</a></button>";
                 }
                 if(checkPowerDifferentThan(0)){
