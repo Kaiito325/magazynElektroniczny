@@ -13,7 +13,7 @@
     <?php
         session_start();
         include '../functions.php';
-
+        // sprawdza czy jest sie zalogowanym
         if(!checkLogin()){
             echo "<script>
                 alert('Zaloguj się!');
@@ -317,4 +317,11 @@
             }
         ?>
     </main>
+    <footer>
+    <section id="footer">
+        <p>Stronę stworzył: Kajetan Kufieta</p>
+        <a href="https://github.com/Kaiito325" target="_blank"><img src="../images/github.png" alt="github" class="icon"></a>
+        <a href="https://linkedIn.com/in/kajetan-kufieta-460a23305" target="_blank"><img src="../images/linkedIn.png" alt="github" class="icon"></a>
+    </section>
+</footer>
 </body>

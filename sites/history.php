@@ -14,14 +14,14 @@
     <?php
         session_start();
         include '../functions.php';
-
+        // sprawdza czy jest zalogowany
         if(!checkLogin()){
             echo "<script>
                 alert('Zaloguj się!');
                 window.location.href = 'panel.php';
             </script>";
         }
-
+        // sprawdza uprawnienia
         if(checkPowerDifferentThan(2)){
             echo "<script>
                 alert('Brak uprawnień!');
@@ -58,6 +58,7 @@
         </ul>
     </menu>
     <main>
+        <!-- Wyświetla całą historię egzemplarzy -->
         <section id='allHistory'>
             <h1>Cała historia</h1>
             <?php
@@ -75,4 +76,11 @@
             ?>
         </section>
     </main>
+    <footer>
+        <section id="footer">
+            <p>Stronę stworzył: Kajetan Kufieta</p>
+            <a href="https://github.com/Kaiito325" target="_blank"><img src="../images/github.png" alt="github" class="icon"></a>
+            <a href="https://linkedIn.com/in/kajetan-kufieta-460a23305" target="_blank"><img src="../images/linkedIn.png" alt="github" class="icon"></a>
+        </section>
+    </footer>
 </body>

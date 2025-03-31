@@ -13,14 +13,14 @@
     <?php
         session_start();
         include '../functions.php';
-
+        // sprawdza czy jest zalogowany
         if(!checkLogin()){
             echo "<script>
                 alert('Zaloguj się!');
                 window.location.href = 'panel.php';
             </script>";
         }
-
+        // sprawdza uprawnienia
         if(!checkPowerDifferentThan(0)){
             echo "<script>
                 alert('Brak uprawnień!');
@@ -60,10 +60,12 @@
     </menu>
     <main>
         <?php
+        // sprawdza czy dodajemy egzemplarz czy przedmiot
         if(isset($_GET['piece'])){
             echo "<section id='pieceAdd'>";
                 $db = mysqli_connect('localhost', 'root', '', 'magazyn');
                 echo "<h1>Doaj nowy egzemplarz </h1>";
+                // tworzy formularz do egzemplarzu i pobiera do niego dane z bazy danych
                 echo "<form action='' method='post' enctype='multipart/form-data' id='editForm'>";
                     echo "<label for='itemName'>Wybierz przedmiot przedmiotu</label>";
                     echo "<select name='itemName' id='itemName'>";
@@ -91,6 +93,7 @@
                 echo "</form>";
             echo "</section>";
         }else{
+            // tworzy formularz do egzemplarzu i pobiera do niego dane z bazy danych
             echo '
                 <section id="itemInfo">
                     <form action="" method="post" enctype="multipart/form-data">
@@ -277,4 +280,11 @@
     ?>
 
     </main>
+    <footer>
+    <section id="footer">
+        <p>Stronę stworzył: Kajetan Kufieta</p>
+        <a href="https://github.com/Kaiito325" target="_blank"><img src="../images/github.png" alt="github" class="icon"></a>
+        <a href="https://linkedIn.com/in/kajetan-kufieta-460a23305" target="_blank"><img src="../images/linkedIn.png" alt="github" class="icon"></a>
+    </section>
+</footer>
 </body>

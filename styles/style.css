@@ -283,6 +283,10 @@ button.next {
     width: 50%;
 }
 
+.icon {
+    width: 50px;
+}
+
 /* Responsywność */
 @media only screen and (max-width: 1100px) {
     .item {
